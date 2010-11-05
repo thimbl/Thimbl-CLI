@@ -1,0 +1,8 @@
+QUICKSTART
+
+Add a message:
+thimbl -m "Laputan machine"
+
+See someone else's messages:
+thimbl -a dk@telekommunisten.org
+
