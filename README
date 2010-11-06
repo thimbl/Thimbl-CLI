@@ -8,3 +8,5 @@ thimbl -a dk@telekommunisten.org
 
 Using piping to extract the plan file and print messages:
 finger dk@telekommunisten.org | thimbl -p explan | thimbl -p jencode | thimbl -p jprint
+
+Some of the above is suspect
