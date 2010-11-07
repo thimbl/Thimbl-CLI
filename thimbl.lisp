@@ -5,6 +5,7 @@
                :arguments (list user) :output :stream :wait t))
 
 (defun finger (user)
+  "Call the external finger program on USER, and return its result"
   (with-output-to-string 
     (out)
     (with-open-stream (stream (run-finger user))
@@ -33,6 +34,9 @@
   (setf plan (finger-to-plan user))
   (json:decode-json-from-string plan))
 
+(defun get-value (symbol list)
+  "Get a value associated with a list"
+  (cdr (assoc symbol list)))
 
 (defun print-followings (plan)
   "Print bio, name and properties associated with a plan"
@@ -40,21 +44,17 @@
   (let ((fmt "~5a ~10a ~20a~%"))
     (format t fmt "IDX" "NICK" "ADDRESS")
     (loop with idx = 0 with nick with address 
-          for followee in (cdr (assoc :following plan)) do
+          for followee in (get-value :following plan) do
         
           (incf idx)
-          (setf nick (cdr (assoc :nick followee)))
-          (setf address (cdr (assoc :address followee)))
+          (setf nick (get-value :nick followee))
+          (setf address (get-value :address followee))
           (format t fmt idx nick address)))
   (terpri))
 
-; FIXME use more extensively
-(defun get-value (symbol list)
-  "Get a value associated with a list"
-  (cdr (assoc symbol list)))
+
 
 (defun print-message (address message)
-
   (let ((text (get-value :text message))
         (time (get-value :time message))
         year month day hour min sec)
@@ -69,14 +69,22 @@
     (setf time (format nil "~a-~a-~a ~a:~a:~a" year month day hour min sec))
     (format t "~a ~a~%~a~%~%" time address text)))
 
-(defun print-messages (plans)
-  "Print all the messages in all plans"
+(defun plan-key (plan)
+  "Return a unique key identifying a plan"
+  (get-value :email (get-value :properties plan)))
+
+(defun print-messages ( &optional (plans *plans*))
+  "Print all the messages in all PLANS. 
+Use global plans if argument not specified"
   (terpri)
   (loop for plan in plans do
-        (loop with address = (get-value :email (get-value :properties plan))
+        (loop with address = (plan-key  plan)
               for message in (get-value :messages  plan) do
               (print-message address message))))
 
+(defun store-plan-into-global (plan)
+  "Insert/replace a plan into the global plans collection"
+  (pushnew plan *plans* :key #'plan-key))
 
 ;(setf json (finger-to-json "dk@telekommunisten.org"))
 (print-followings (first *plans*))
