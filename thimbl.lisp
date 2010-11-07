@@ -53,21 +53,16 @@
   (terpri))
 
 
-
 (defun print-message (address message)
-  (let ((text (get-value :text message))
-        (time (get-value :time message))
-        year month day hour min sec)
-    (setf time (write-to-string time))
-    ;(break)
-    (setf year (subseq time 0 4))
-    (setf month (subseq time 4 6))
-    (setf day (subseq time 6 8))
-    (setf hour (subseq time 8 10))
-    (setf min (subseq time 10 12))
-    (setf sec (subseq time 12 14))
-    (setf time (format nil "~a-~a-~a ~a:~a:~a" year month day hour min sec))
-    (format t "~a ~a~%~a~%~%" time address text)))
+  (let* ((text (get-value :text message))
+         (time (get-value :time message))
+         (time-text (write-to-string time))
+         (time-elements (loop for i from 0 to 12 by 2
+                              collect (subseq time-text i (+ 2 i))))
+         (formatted-time (format nil  "~{~a~a-~a-~a ~a:~a:~a~}"
+                                 time-elements)))    
+    (format t "~a    ~a~%~a~%~%" formatted-time address text)))
+
 
 (defun plan-key (plan)
   "Return a unique key identifying a plan"
