@@ -1,5 +1,14 @@
 (ql:quickload "cl-json")
 
+(defgeneric display (object)
+  (:documentation "Generic method for displaying an object"))
+
+(defun display-slots (fmt obj slot-names)
+  (format t fmt (loop for slot-name in slot-names collect (slot-value obj slot-name))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; collection object
+
 (defclass collection () 
   ((cursor :initform 0)
    (contents :initform (make-array 2 :fill-pointer 0 :adjustable t))))
@@ -12,15 +21,49 @@
 (defun insert (collection value)
   "Add a value to a collection"
   (vector-push-extend value (slot-value collection 'contents)))
-  
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; followee object
+ 
 (defclass followee ()
   ((nick :initarg :nick)
    (address :initarg :address)))
 
-(defclass post () (to text time))
+(defmethod display ((f followee)) (display-slots "~{~10a~a~%~}" f '(nick address)))
+
+(defun follow (nick address)
+  "Follow someone with nickname NICK and finger address ADDRESS"
+  (insert (slot-value *me* 'following) 
+          (make-instance 'followee :nick nick :address address)))
+
+(defun following ()
+  "Print information about who I am following"
+  (do-collection (slot-value *me* 'following) #'display))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; post object
+
+(defclass post () 
+  ((to :initarg :to)
+   (text :initarg :text)
+   (time :initarg :time)))
+
+(defmethod display ((p post)) (display-slots "~{~12a~15a~50a~%~}" p '(to time text)))
+
+(defun posts (plan)
+  (do-collection (slot-value plan 'posts) #'display))
+
+(defun post (text)
+  "Post TEXT"
+  (insert (slot-value *me* 'posts) (make-instance 'post :time 666 :text text)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; plan object
 
 (defclass plan () 
-  ((address :initform "--VERY IMPORTANT--")
+  ((address :reader address :writer set-address :initform "--VERY IMPORTANT--" )
    (name :initform "ANON")
    (bio :initform "Just a guy")
    (website :initform "www.example.com")
@@ -29,38 +72,40 @@
    (following :initform (make-instance 'collection))
    (posts :initform (make-instance 'collection))))
 
+; (address plan) , or (set-address value plan)
+
+
+(defmethod display ((p plan)) (display-slots "~{~20a~a~%~}" p '(address bio)))
+
+
 (defvar *me* nil "My plan")
 (defun reset-me ()(setf *me* (make-instance 'plan)))
 (unless *me* (reset-me))
 
-(defun post (text)
-  "Post TEXT"
-  (insert (slot-value *me* 'posts) text))
+(defvar *plans* nil "All the plans: including me")
+(defun reset-plans () 
+  (setf *plans* (make-instance 'collection))
+  (reset-me)
+  (insert *plans* *me*))
+(unless *plans* (reset-plans))
+
+
+
+
 
 (post "hello world")
 
-(defun follow (nick address)
-  "Follow someone with nickname NICK and finger address ADDRESS"
-  (insert (slot-value *me* 'following) 
-          (make-instance 'followee :nick nick :address address)))
-
-(defgeneric display (object)
-  (:documentation "Generic method for displaying an object"))
-
-(defmethod display ((f followee))
-  (format t "~a~10t~a ~%" 
-          (slot-value f 'nick) 
-          (slot-value f 'address)))
-
-(defmethod display ((p plan))
-  (format t "~a~10t~a ~%" 
-          (slot-value p 'bio) 
-          (slot-value p 'address)))
 
 
-(defun following ()
-  "Print information about who I am following"
-  (do-collection (slot-value *me* 'following) #'display))
+
+
+
+
+
+
+
+
+
 
 
 
@@ -76,12 +121,11 @@
 (plans)
 
 
-(defvar *plans* nil "All the plans: including me")
-(defun reset-plans () 
-  (setf *plans* (make-instance 'collection))
-  (insert *plans* *me*))
 
-(unless *plans* (reset-plans))
+(posts *me*)
+
+
+
 
 
 
