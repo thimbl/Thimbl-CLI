@@ -1,1 +1,1 @@
-emacs -nw --load project.el
+emacs --load project.el
