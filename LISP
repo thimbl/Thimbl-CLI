@@ -1,8 +1,12 @@
 If you want to use a Lisp version of Thimbl, you will need to install Quicklisp and the json extension. Here's what I did:
 Downloaded quicklisp from http://www.quicklisp.org/beta/
+One-time operation:
 (load "quicklisp.lisp")
 (quicklisp-quickstart:install)
-(ql:quickload "cl-json")
-(ql:quickload "cl-ppcre")
-(saveinitmem "lispinit.mem")
-(quit)
+(ql:add-to-init-file)
+
+;(ql:quickload "cl-json")
+;(ql:quickload "cl-ppcre")
+
+Make an initial image:
+clisp -x "(saveinitmem)"

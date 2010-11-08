@@ -1,3 +1,5 @@
+(ql:quickload "cl-json")
+
 (defvar *plans* nil "All the plans: us and others")
 
 (defun run-finger (user)
@@ -6,33 +8,28 @@
 
 (defun finger (user)
   "Call the external finger program on USER, and return its result"
-  (with-output-to-string 
-    (out)
-    (with-open-stream (stream (run-finger user))
-                      (do ((x (read-char stream nil stream) 
-                              (read-char stream nil stream)))
-                          ((eq x stream))
-                          (write-char x out))
-                      out)))
+  (with-open-stream (stream (run-finger user))
+    (loop :for line = (read-line stream nil nil)
+       :while line :collect line)))
 
-(defun finger-output-to-plan (finger-output-text)
-  "Convert raw text provided by finger and obtain its plan"
-  (let (re plan)
-    (setf re (cl-ppcre:create-scanner "^.*Plan:\\s*"  :single-line-mode t))
-    (setf plan (cl-ppcre:regex-replace re finger-output-text ""))
-    plan))
+(defun plan-lines (finger-lines)
+  "Given a list of lines returned by finger, , extract the lines after the plan"
+  (cdr (member "Plan:" finger-lines :test #'equalp)))
+
 
 (defun finger-to-plan (user)
-  "Obtain a user-name, finger him, and convert the output to a plan"
-  (let (raw)
-    (setf raw (finger user))
-    (finger-output-to-plan raw)))
+  "Given a user-name, finger him, and convert the output to lines of a plan"
+  (plan-lines (finger user)))
 
+(defun lines-to-string (lines)
+  "Convert a list of strings to a single string, separated by newlines"
+  (format nil "~{~A~%~}" lines))
 
 (defun finger-to-json (user)
   "Finger a user, returning his plan as a json structure"
-  (setf plan (finger-to-plan user))
-  (json:decode-json-from-string plan))
+  (let* ((lines (finger-to-plan user))
+         (string (lines-to-string lines)))
+        (json:decode-json-from-string string)))
 
 (defun get-value (symbol list)
   "Get a value associated with a list"
