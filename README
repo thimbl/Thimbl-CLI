@@ -1,5 +1,25 @@
 QUICKSTART
 
+Set up the whole Thimbl infrastructure by typing:
+   thcreate
+
+Create posts by typing:
+   thpost
+Then enter a line of text and press return. Lo and behold, you have posted to the cache, but not published your posts
+
+Follow a person:
+   thfollow
+Type in their username (e.g. dk@telekommunisten.org) and press return.
+
+thindex - a command used internally to decide on index numbers for entities it creates.
+
+thpublish - creates the .plan file so that people can read your posts
+
+
+
+* The following information is suspect:
+
+
 Add a message:
 thimbl -m "Laputan machine"
 
@@ -10,3 +30,5 @@ Using piping to extract the plan file and print messages:
 finger dk@telekommunisten.org | thimbl -p explan | thimbl -p jencode | thimbl -p jprint
 
 Some of the above is suspect
+
+
