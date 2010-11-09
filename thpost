@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+dest_dir=`thindex --full --dir ~/.config/thimbl/config/me/messages`
+mkdir $dest_dir
+echo `date +%Y%m%d%k%M%S` > $dest_dir/time
+read text
+echo $text > $dest_dir/text
+
+

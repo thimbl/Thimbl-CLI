@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+dest_dir=`thindex --full --dir ~/.config/thimbl/config/me/following`
+mkdir $dest_dir
+
+echo -n "Nick?"
+read nick
+echo -n "Address?"
+read address
+
+echo $nick > $dest_dir/nick
+echo $address > $dest_dir/address
+
+

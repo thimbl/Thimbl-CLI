@@ -1,0 +1,56 @@
+#! /usr/bin/env bash
+# setup thimbl, and create a profile
+
+echo Setting up thimbl. You can abandon setup by typing Ctl-C
+echo MOST IMPORTANT FIELD FOLLOWS. 
+echo -n "Finger address (e.g. ossa@nummo.strangled.net)?"
+read address
+
+echo "Now for some follow-up questions. If you don't want to answer all of them, just press return to create a blank entry"
+echo -n "bio (e.g. Venture communist)?"
+read bio
+echo -n "name (e.g. Bill Gates)?"
+read name
+echo -n "website (e.g. http://www.foo.com)?"
+read website
+echo -n "mobile (.e.g. +12345)?"
+read mobile
+echo -n "email (e.g. bgates@foo.com)?"
+read email
+
+echo "You entered the following:"
+echo "address: " $address
+echo "bio:     " $bio
+echo "name:    " $name
+echo "website: " $website
+echo "mobile:  " $mobile
+echo "email:   " $email
+echo "You can now create this by just pressing return. Ctl-C abandons"
+echo -n "Create?"
+read response
+
+
+
+function createdir () {
+    if [ ! -d $1 ]
+    then
+        mkdir $1
+    fi
+}
+
+createdir ~/.config
+createdir ~/.config/thimbl
+createdir ~/.config/thimbl/plans
+createdir ~/.config/thimbl/plans/$address
+echo $bio  > ~/.config/thimbl/plans/$address/bio
+echo $name > ~/.config/thimbl/plans/$address/name
+createdir ~/.config/thimbl/plans/$address/properties
+echo $website > ~/.config/thimbl/plans/$address/properties/website
+echo $mobile  > ~/.config/thimbl/plans/$address/properties/mobile
+echo $email   > ~/.config/thimbl/plans/$address/email
+createdir ~/.config/thimbl/plans/$address/following
+createdir ~/.config/thimbl/plans/$address/messages
+createdir ~/.config/thimbl/plans/$address/replies
+
+createdir ~/.config/thimbl/config
+ln -s ~/.config/thimbl/plans/$address ~/.config/thimbl/config/me
