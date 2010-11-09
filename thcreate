@@ -47,7 +47,7 @@ echo $name > ~/.config/thimbl/plans/$address/name
 createdir ~/.config/thimbl/plans/$address/properties
 echo $website > ~/.config/thimbl/plans/$address/properties/website
 echo $mobile  > ~/.config/thimbl/plans/$address/properties/mobile
-echo $email   > ~/.config/thimbl/plans/$address/email
+echo $email   > ~/.config/thimbl/plans/$address/properties/email
 createdir ~/.config/thimbl/plans/$address/following
 createdir ~/.config/thimbl/plans/$address/messages
 createdir ~/.config/thimbl/plans/$address/replies

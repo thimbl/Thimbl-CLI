@@ -1,0 +1,42 @@
+#!/usr/bin/env python
+
+# Create your .plan file
+
+import json
+import os
+from stat import *
+
+
+def build(base):
+    'Scan the filesystem, collecting relevant information'
+    nodes = os.listdir(base)
+    if len(nodes) == 0: return
+    if nodes[0].isdigit():
+        # build a list
+        b = os.path.basename(base)
+        return [ build(os.path.join(base, node)) for node in nodes]
+    else:
+        result = {}
+        for node in nodes:
+            pathname = os.path.join(base, node)
+            mode = os.stat(pathname)[ST_MODE]
+            if S_ISDIR(mode):
+                # It's a directory, recurse into it
+                result[node] = build(pathname)
+            elif S_ISREG(mode):
+                # It's a file, call the callback function
+                result[node] = file(pathname, 'rb').read().rstrip()
+            else:
+                # Unknown file type, print a message
+                print 'Skipping %s' % pathname
+        return result
+
+
+def main():
+    root = os.path.expanduser('~/.config/thimbl/config/me')
+    tree = build(root)
+    pfile = os.path.expanduser('~/.plan')
+    file(pfile, "wb").write(json.dumps(tree))
+
+if __name__ == "__main__":
+    main()

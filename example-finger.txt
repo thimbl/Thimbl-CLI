@@ -1,0 +1,8 @@
+[telekommunisten.org]
+Login: dk             			Name: Dmytri Kleiner
+Directory: /home/dk                 	Shell: /bin/bash
+Office: +491632866163
+Last login Fri Nov  5 12:42 (EDT) on pts/1 from 89.246.67.229
+Mail last read Sun Nov  1 15:07 2009 (EST)
+Plan:
+{"bio": "Venture Communist", "name": "Dmytri Kleiner", "messages": [{"text": "Hey @mark, this is the first update sent with Thimbl-CLI", "time": 20101105124412}, {"text": "mike needs to stop sending messages from the future!", "time": 20100707125120}, {"text": "#thimbl is rolling!", "time": 20100707122140}, {"text": "I love thimbl! #thimbl", "time": 20100622170914}], "replies": {"rw@telekommunisten.org": [{"text": "@rico, I'll call you later", "time": 20100622162340}], "mike@mikepearce.net": [{"text": "@mike, the baboon would win. No contest", "time": 20100707122100}, {"text": "@mike, do you like this json format?", "time": 20100622170025}], "ashull@telekommunisten.org": [{"text": "@ashull, the feed is awesome, works great!", "time": 20100707122315}, {"text": "@ashull, here is a reply", "time": 20100705163145}]}, "following": [{"nick": "mike", "address": "mike@mikepearce.net"}, {"nick": "rico", "address": "rw@telekommunisten.org"}, {"nick": "ashull", "address": "ashull@telekommunisten.org"}], "properties": {"website": "http://www.telekommunisten.net", "mobile": "+491632866163", "email": "dk@telekommunisten.net"}}
