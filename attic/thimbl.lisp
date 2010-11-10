@@ -1,5 +1,12 @@
 (ql:quickload "cl-json")
 
+
+(defvar *vfs* nil "a virtual file system")
+
+
+
+
+
 (defgeneric display (object)
   (:documentation "Generic method for displaying an object"))
 
@@ -158,6 +165,42 @@
          (string (lines-to-string lines)))
         (json:decode-json-from-string string)))
 
+(setf json (finger-to-json "dk@telekommunisten.org"))
+
+
+(defun json-to-fs (json)
+  "Convert a json structure to a file system"
+  (print json)
+  (if (atom (car json))
+      (let ((rest (cdr json)))
+        (if (atom rest)
+            rest
+      (if (atom 
+  (if (atom json) 
+      json
+    (progn 
+      (print (car json))
+
+      (if (keywordp (car json))
+          (let ((vector (make-array 2 :fill-pointer 0 :adjustable t)))
+            (loop for el in (cdr json) do
+                  (print "vector")
+                  (vector-push-extend (json-to-fs el) vector))
+            vector)
+
+        (progn
+          (if (car json)
+              (let ((table (make-hash-table)))
+                (loop for  el in json do
+                      (print "hash")
+                      (print (cdr el))
+                      (setf (gethash (car el) table) (json-to-fs (cdr el))))
+                table)
+            (error "Unexpect type")))))))
+        
+
+;(setf tree (json-to-fs json))
+
 (defun get-value (symbol list)
   "Get a value associated with a list"
   (assoc symbol list))
@@ -210,7 +253,7 @@ Use global plans if argument not specified"
   
 
   
-(setf json (finger-to-json "dk@telekommunisten.org"))
+
 ; (saveinitmem)
 (setf c (make-instance 'collection))
 (add c 42)
