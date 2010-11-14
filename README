@@ -1,38 +1,60 @@
 QUICKSTART
 
-Set up the whole Thimbl infrastructure by typing:
-   thcreate
+* Set up your profile
 
-Create posts by typing:
-   thpost
-Then enter a line of text and press return. Lo and behold, you have posted to the cache, but not published your posts
+Start python, and enter code that will look something like this:
+# --- begin ---
+import sitt
+data = sitt.create("myname@this.machine.com", "my bio", "my name", 
+     "my website", "my mobile", "my email")
+sitt.save(data, ".thimbl")
+quit()
+# --- end ---
 
-Follow a person:
-   thfollow
-Type in their username (e.g. dk@telekommunisten.org) and press return.
 
-thindex - a command used internally to decide on index numbers for entities it creates.
+* General usage
 
-thpublish - creates the .plan file so that people can read your posts
+Start python again, and type the following:
+# --- begin ---
+import sitt
+data = sitt.load(".thimbl") # reload our data file
 
-TODO:
-fingering
-writing digests
+# create some posts
+sitt.post(data, "My first post")
+sitt.post(data, "Another post")
+sitt.publish(data) # create a plan file so that people can see out posts
+
+# follow a few people
+sitt.follow(data, 'dk', 'dk@telekommunisten.net')
+sitt.follow(data, 'ww', 'ww@river.styx.org')
+
+# retrieve posts for people we are following
+sitt.fetch(data)
+
+# see the messages
+sitt.prmess(data)
+
+# save out work and exit
+sitt.save(data, ".thimbl")
+quit()
+
+# --- end ---
+
+
+
+* Some people to finger
+
+If you're looking to finger a few people, try:
+dk@telekommunisten.net
+ww@river.styx.org
+ww.foaf@river.styx.org
+dk@thimbl.net
+
+
+
+* TODO
 reply
+create a finger daemon
 
-
-* The following information is suspect:
-
-
-Add a message:
-thimbl -m "Laputan machine"
-
-See someone else's messages:
-thimbl -a dk@telekommunisten.org
-
-Using piping to extract the plan file and print messages:
-finger dk@telekommunisten.org | thimbl -p explan | thimbl -p jencode | thimbl -p jprint
-
-Some of the above is suspect
 
 

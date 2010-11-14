@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# print the people I am following
+
+find  ~/.config/thimbl/config/me/following -name address -exec cat '{}' \;

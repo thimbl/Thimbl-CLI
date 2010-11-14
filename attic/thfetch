@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# fetch posts by users
+
+thfollowing | xargs  finger
+
