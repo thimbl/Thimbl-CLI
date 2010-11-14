@@ -10,9 +10,6 @@ import subprocess
 import sys
 import time
 
-stack = []
-
-
 def create(address, bio, name, website, mobile, email):
     'Create data given user information'
 
@@ -101,50 +98,3 @@ def load(filename):
     'Load data from a json file'
     s = file(filename, 'r').read()
     return json.loads(s)
-
-#plan_filename = os.path.expanduser('~/.plan')
-#    plan_text = file(plan_filename, 'r').read()
-#    plan = json.loads(plan_text)
-#    plan['messages'].insert(0, message)
-
-
-def XXXmkfiles(json_text):
-    '''Given some text in json format, create directories and files'''
-
-    def make(data, node_name):
-        'Given a data structure, create a file system'
-        if type(data) is dict:
-            for key in data.keys(): 
-                value = data[key]
-                make(value, node_name + "/" + key)
-        elif (t is str) or (t is unicode) or (t is int):
-            file(node_name, "w").write(str(value))
-        elif t is list:
-            True
-            
-                    
-        
-    j =json.loads(json_text)
-    make(j, "XXX")
-    
-    
-    
-def main():
-    parser = optparse.OptionParser()
-    parser.add_option("-m", "--message", dest="message", help="add a message")
-    parser.add_option("-a", "--address", dest="address", help="pretty-print the plan file for an address")
-    parser.add_option("-f", "--follow", action="store_true", dest="follow", help="follow someone")
-    parser.add_option("-p", "--pipe", dest="pipe", help="pipe a command through stdin/stdout")
-    (options, args) = parser.parse_args()
-    #print options
-    #print args
-    if options.message:
-        add_message(options.message)
-    if options.address:
-        single_finger(options.address)
-    if options.follow:
-        follow()
-    if options.pipe: piping(options.pipe)
-    
-if __name__ == "__main__":
-    main()
