@@ -27,7 +27,7 @@ def myplan(data):
 
 def post(data, text):
     'Create a message. Remember to publish() it'
-    timefmt = time(time.strftime('%Y%m%d%H%M%S'))
+    timefmt = time.strftime('%Y%m%d%H%M%S')
     message = { 'time' : timefmt, 'text' : text }
     myplan(data)['messages'].append(message)
 
@@ -75,7 +75,6 @@ def prmess(data):
     'print messages'
     for address in data['plans'].keys():
         plan = data['plans'][address]
-        print address, plan
         if not plan.has_key('messages'): continue
         for msg in plan['messages']:
             print address
@@ -98,3 +97,43 @@ def load(filename):
     'Load data from a json file'
     s = file(filename, 'r').read()
     return json.loads(s)
+
+
+def main():
+
+    #parser.add_option("-f", "--file", dest="filename",
+    #help="write report to FILE", metavar="FILE")
+    #parser.add_option("-q", "--quiet",
+    #action="store_false", dest="verbose", default=True,
+    #help="don't print status messages to stdout")
+    #parser.add_option
+
+    # set up directory and files
+    thimbldir = os.path.expanduser('~/.config/thimbl')
+    try: os.makedirs(thimbldir)
+    except OSError: pass # don't worry if directory already exists
+    thimblfile = os.path.join(thimbldir, 'data1.jsn')
+    if os.path.isfile(thimblfile):
+        data = load(thimblfile)
+    else:
+        data = None
+
+    cmd = sys.argv[1]
+    if cmd =='fetch':
+        fetch(data)
+    elif cmd == 'follow':
+        follow(data, sys.argv[2], sys.argv[3])
+    elif cmd == 'post':
+        post(data, sys.argv[2])
+    elif cmd == 'print':
+        prmess(data)
+    elif cmd == 'setup':
+        data = apply(create, sys.argv[2:])
+
+
+    save(data, thimblfile)
+    publish(data)
+
+
+if __name__ == "__main__":
+    main()

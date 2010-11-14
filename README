@@ -2,6 +2,16 @@ QUICKSTART
 
 * Set up your profile
 
+thimbl setup mcarter@markcarter.me.uk "Just a guy" "Mark Carter" "www.markcarter.me.uk" "N/A" "info@markcarter.me.uk"
+
+* General usage
+Create a post:  thimbl post "First post"
+Follow someone: thimbl follow "dk" "dk@telekommunisten.net"
+Fetch messages of people you are following:   thimbl fetch
+Print messages (including your own):  thimbl print
+
+
+
 Start python, and enter code that will look something like this:
 # --- begin ---
 import sitt
