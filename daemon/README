@@ -1,0 +1,53 @@
+How to set up a crude finger server
+
+I have trying ubuntu, and I have been most unstatisfied with the
+finger daemons on offer.  Instead of going an ultra-complicated route,
+I have tried to opt for about the simplest thing that will work. It is
+based on the assumption that there is only one real user on the
+system, and that it is only him who has a .plan file that needs to be
+published.
+
+Here's what to do:
+
+
+* REDIRECT PORT 79
+
+Normal users can't bind below port 1000, so you need to redirect it to
+some other port. In this case, use port 4214. As root, type:
+
+   iptables -t nat -A PREROUTING -p tcp --dport 79 -j REDIRECT --to-port 4214
+
+Don't change it from 4214 without good reason, because thimbld.c is
+compiled under the assumption that you will be using 4214.
+
+Other solutions, including 'authbind', are mentioned here:
+http://serverfault.com/questions/112795/how-can-i-run-a-server-on-linux-on-port-80-as-a-normal-user
+Security and other problems and limitations are also discussed there.
+
+* COMPILE THE DAEMON
+
+You will need gcc and the include files to compile the binary. On
+Slackware, this wont be a problem. On other systems, you may need to
+install them. To compile, issue the command:
+
+   gcc -o thimbld thimbld.c
+
+thimbld.c just executes a shell script. I have chosen to wrap the
+script in a C file in this way so that I have an easily idintifiable
+process that I can kill.
+
+* LAUNCH THE DAEMON
+
+Easy enough:
+
+   ./launch-thimbld
+
+It's a very simple script.
+
+* KILL THE DAEMON
+
+When you get fed up running the daemon, issue the command
+
+   ./kill-thimbld
+
+That should do the trick

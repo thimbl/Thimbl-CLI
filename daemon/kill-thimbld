@@ -1,0 +1,2 @@
+pkill thimbld
+pkill "nc -l 2124"

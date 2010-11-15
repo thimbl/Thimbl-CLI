@@ -65,8 +65,14 @@ dk@thimbl.net
 http://blippy.github.com/Thimbl-CLI/
 
 * TODO
+
 reply
-create a finger daemon
+
+* DAEMON
+
+Fed up trying to configure a finger daemon just to serve Thimbl plans?
+Then look in directory daemon, which contains the simplest solution to
+the problem.
 
 
 
