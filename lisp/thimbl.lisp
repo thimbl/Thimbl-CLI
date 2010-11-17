@@ -76,9 +76,6 @@
 ;(post "foo")
 ;(post "bar")
 
-(defmacro with-element (var element plan &body body)
-  `(symbol-macrolet ((,var (cdr (assoc ,element ,plan))))
-                    ,@body))
 
 (defun now-as-int ()
   "Return the time now as an integer"
@@ -86,21 +83,32 @@
         for v in (multiple-value-list (get-decoded-time))
         summing (* (expt 100 i) v)))
 
+(defmacro sub-assoc (field-name branch)
+  "A sub-association of a branch"
+  `(cdr (assoc ,field-name ,branch)))
+
+
 
 (defun post (message)
-  (with-element msgs :messages *me*
-                (push `((:text . ,message) (:time . ,(now-as-int))) msgs))
-  t)
+  (push `((:text . ,message) (:time . ,(now-as-int))) 
+        (sub-assoc :messages *me*)))
+
+;  (setf (messages *me*) foo)
+
+(post "hello world anew")
 
 (post "using another macro")
 
 
- 
-(defun follow (address &optional (nick ""))
-  (with-element follows :following *me*
-                (pushnew `((:nick . ,nick) (:address . ,address)) 
-                         follows :test #'equalp)) ; FIXME SORT OUT CASE SAME ADDRESS, DIFFERENT NICK
-  t)
+
+(defun follow (nick address)
+  "Follow someone"
+  ;; FIXME SORT OUT CASE SAME ADDRESS, DIFFERENT NICK
+  (pushnew `((:nick . ,nick) (:address . ,address)) 
+           (sub-assoc :following *me*) 
+           :test #'equalp))
+
+;(follow "foo" "bar")
 
 ;(follow "dk@telekommunisten.net" "dk")
   
@@ -109,9 +117,8 @@
 |#
 
 (defun who-do-i-follow ()
-  (with-element follows :following *me*
-                (loop for f in follows
-                      collect (cadadr f))))
+  (loop for f in (sub-assoc :following *me*)
+        collect (sub-assoc :address f)))
 
 (defvar *plans* nil)
 
