@@ -136,4 +136,3 @@
 (follow "ashull" "ashull@telekommunisten.org")
 
 ; (saveinitmem)
-
