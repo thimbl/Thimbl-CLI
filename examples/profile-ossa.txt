@@ -1,0 +1,4 @@
+./thimbl setup ossa@nummo.strangled.net "Goddess of Runour" \
+      "Ossa" http://mummo.strangled.ner "N/A" "ossa@nummo.strangled.net"
+./thimbl post "First post"
+./thimbl follow "dk" "dk@telekommunisten.net"
