@@ -1,0 +1,40 @@
+
+
+Start python, and enter code that will look something like this:
+# --- begin ---
+import sitt
+data = sitt.create("myname@this.machine.com", "my bio", "my name", 
+     "my website", "my mobile", "my email")
+sitt.save(data, ".thimbl")
+quit()
+# --- end ---
+
+
+* General usage
+
+Start python again, and type the following:
+# --- begin ---
+import sitt
+data = sitt.load(".thimbl") # reload our data file
+
+# create some posts
+sitt.post(data, "My first post")
+sitt.post(data, "Another post")
+sitt.publish(data) # create a plan file so that people can see out posts
+
+# follow a few people
+sitt.follow(data, 'dk', 'dk@telekommunisten.net')
+sitt.follow(data, 'ww', 'ww@river.styx.org')
+
+# retrieve posts for people we are following
+sitt.fetch(data)
+
+# see the messages
+sitt.prmess(data)
+
+# save out work and exit
+sitt.save(data, ".thimbl")
+quit()
+
+# --- end ---
+
