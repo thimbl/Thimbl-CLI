@@ -1,28 +1,32 @@
+Thimbl is a set of client-side tools for a distributed open source
+microblogging platform. Thimbl-CLI is a set of command-line tools, and
+is more modest in its ambitions than the whole of the Thimbl project.
+
+Thimbl-CLI requires Linux/cygwin. It also includes the simplest
+possible finger daemon to serve your tweets.
+
 QUICKSTART
 
-* Set up your profile
+Thimbl-CLI is pretty much ready to go out of the box client-side.
 
-thimbl setup mcarter@markcarter.me.uk "Just a guy" "Mark Carter" "www.markcarter.me.uk" "N/A" "info@markcarter.me.uk"
+Set up your profile:
+   thimbl setup mcarter@markcarter.me.uk "Just a guy" \
+      "Mark Carter" "www.markcarter.me.uk" "N/A" "info@markcarter.me.uk"
+Create a post:
+   thimbl post "First post"
+Follow someone: 
+   thimbl follow "dk" "dk@telekommunisten.net"
+Fetch messages of people you are following:
+   thimbl fetch
+Print messages (including your own):
+  thimbl print
 
-* General usage
-Create a post:  thimbl post "First post"
-Follow someone: thimbl follow "dk" "dk@telekommunisten.net"
-Fetch messages of people you are following:   thimbl fetch
-Print messages (including your own):  thimbl print
 
+WHERE NEXT
 
+Look in the doc folder for a more complete manual on Thimbl-CLI, which
+contains the main documentation effort.
 
-* Some people to finger
-
-If you're looking to finger a few people, try:
-dk@telekommunisten.net
-ww@river.styx.org
-ww.foaf@river.styx.org
-dk@thimbl.net
-
-* WEBSITE
-
-http://blippy.github.com/Thimbl-CLI/
 
 
 
@@ -32,14 +36,4 @@ Fed up trying to configure a finger daemon just to serve Thimbl plans?
 Then look in directory daemon, which contains the simplest solution to
 the problem.
 
-* PREREQUISITES
 
-To generate the documentation on slackware, you will need to use sbopkg to install docutils.
-
-* TIPS
-
-** To print the rst files as man pages:
-rst2man.py <thimbl.rst | groff -man -Tascii | less
-
-** To pretty-print json strings:
-echo '{"foo": "lorem", "bar": "ipsum"}' | python -mjson.tool

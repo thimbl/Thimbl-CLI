@@ -1,0 +1,5 @@
+PREREQUISITES
+
+To generate documentation, you need :
+* the Python docutils module. Slackware 13.1 users can install it from sbopkg. Many other distros will have the module available in their repos. Failing that, PyPI will have it.
+

@@ -1,0 +1,6 @@
+This folder contains documentation for Thimbl-CLI in rst
+(reStructuredText) format. rst files are plain text files formatted in
+a style that makes them converted easily to other formats (htm, man,
+etc.).
+
+Start by looking at thimbl.rst .

@@ -8,10 +8,10 @@ thimbl plan file
 
 
 :Author: mcturra2000@yahoo.co.uk
-:Date: 2010-11-16
+:Date: 2010-11-17
 :Copyright: Public Domain
 :Version: 0.0
-:Manual section: 7
+:Manual section: 5
 :Manual group: thimbl
 
 SYNOPSIS
