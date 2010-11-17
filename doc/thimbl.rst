@@ -58,12 +58,16 @@ QUICKSTART
 * Set up your profile::
     thimbl setup mcarter@markcarter.me.uk "Just a guy" \
        "Mark Carter" "www.markcarter.me.uk" "N/A" "info@markcarter.me.uk"
+
 * Create a post::
     thimbl post "First post"
+
 * Follow someone::
     thimbl follow "dk" "dk@telekommunisten.net"
+
 * Fetch messages of people you are following::
     thimbl fetch
+
 * Print messages (including your own)::
     thimbl print
 
@@ -81,6 +85,19 @@ Thimbl - so they are the most likely to be blogging actively::
    ossa@nummo.strangled.net
    ww@river.styx.org
    ww.foaf@river.styx.org
+
+
+RESOURCES
+=========
+
+This section provides information available on the web that is related
+to Thimbl.
+
+* Mailing list::
+   http://telekommunisten.net/telecomintern
+
+* Twitter account: thimbl
+
 
 TIPS
 ====
