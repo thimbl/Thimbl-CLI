@@ -65,6 +65,7 @@ def fetch(data):
         except AttributeError:
             print 'Failed on address. Skipping'
             continue
+        print "DEBUG:", plan
         data['plans'][address] = plan
     print 'Finished'
     
@@ -72,17 +73,27 @@ def fetch(data):
 
 
 def prmess(data):
-    'print messages'
+    'Print messages in reverse chronological order'
+    
+    # accumulate messages
+    messages = []
     for address in data['plans'].keys():
         plan = data['plans'][address]
         if not plan.has_key('messages'): continue
         for msg in plan['messages']:
-            print address
-            t = str(msg['time'])
-            y, mo, d, h, mi, s = t[:4], t[4:6], t[6:8], t[8:10], t[10:12], t[12:14]
-            print '{0}-{1}-{2} {3}:{4}:{5}'.format(y, mo, d, h, mi, s)
-            print msg['text']
-            print
+            msg['address'] = address
+            messages.append(msg)
+            
+    messages.sort(key = lambda x: x['time'], reverse = True)
+    
+    # print messages
+    for msg in messages:
+        # format time
+        t = str(msg['time'])
+        y, mo, d, h, mi, s = t[:4], t[4:6], t[6:8], t[8:10], t[10:12], t[12:14]
+        ftime = '{0}-{1}-{2} {3}:{4}:{5}'.format(y, mo, d, h, mi, s)
+
+        print '{0}  {1}\n{2}\n\n'.format(ftime, msg['address'], msg['text'])
 
 
 def save(data, filename):
@@ -129,6 +140,8 @@ def main():
         prmess(data)
     elif cmd == 'setup':
         data = apply(create, sys.argv[2:])
+    else:
+        print "Unrecognised command: ", cmd
 
 
     save(data, thimblfile)
