@@ -1,0 +1,5 @@
+./thimbl setup me@localhost "Test user" \
+      "Test user" http://localhost "N/A" "me@localhost"
+./thimbl post "Test user says hi"
+./thimbl follow "dk" "dk@telekommunisten.net"
+./thimbl follow "ossa" "ossa@nummo.strangled.net"
