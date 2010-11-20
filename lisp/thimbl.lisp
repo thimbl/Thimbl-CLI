@@ -83,7 +83,7 @@
         for v in (multiple-value-list (get-decoded-time))
         summing (* (expt 100 i) v)))
 
-(defmacro sub-assoc (field-name branch)
+(defmacro cassoc (field-name branch)
   "A sub-association of a branch"
   `(cdr (assoc ,field-name ,branch)))
 
@@ -91,7 +91,7 @@
 
 (defun post (message)
   (push `((:text . ,message) (:time . ,(now-as-int))) 
-        (sub-assoc :messages *me*)))
+        (cassoc :messages *me*)))
 
 ;  (setf (messages *me*) foo)
 
@@ -105,20 +105,21 @@
   "Follow someone"
   ;; FIXME SORT OUT CASE SAME ADDRESS, DIFFERENT NICK
   (pushnew `((:nick . ,nick) (:address . ,address)) 
-           (sub-assoc :following *me*) 
+           (cassoc :following *me*) 
            :test #'equalp))
 
 ;(follow "foo" "bar")
 
-;(follow "dk@telekommunisten.net" "dk")
+;(follow "dk" "dk@telekommunisten.net")
+;(follow "ossa" "ossa@nummo.strangled.net")
   
 #|
 (setup "ossa@numo.strangled.net" "Rumour Goddess" "Ossa" "http://nummo.strangled.net" "N/A" "ossa@numo.strangled.net")
 |#
 
 (defun who-do-i-follow ()
-  (loop for f in (sub-assoc :following *me*)
-        collect (sub-assoc :address f)))
+  (loop for f in (cassoc :following *me*)
+        collect (cassoc :address f)))
 
 (defvar *plans* nil)
 
@@ -126,7 +127,26 @@
   (setf *plans* (loop for f in (who-do-i-follow)
                       collect (finger-to-json f))))
 ;(fetch)
-        
+
+;; bits below untested
+
+(defun add-adress-to-messages (address messages)
+  (loop for msg in messages
+	do (setf (cassoc :address msg) address)
+	collect msg))
+
+(defun prmsgs ()
+  "Print all messages"
+  (let* ((unsorted-messages (loop for plan in (cons *me* *plans*)
+				  append (add-address-to-messages (cassoc :address plan) (cassoc :messages plan))))
+	 (sorted-messages (sort unsorted-messages #'< :key (lambda (message) (cassoc :time message)))))
+    (loop for msg in sorted-messages do
+	  (format t "~a   ~a ~%~a~%~%" (cassoc :time msg) (cassoc :address msg) (cassoc :text msg)))))
+    
+
+;(prmsgs)
+	
+
                 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
