@@ -28,12 +28,3 @@ Look in the doc folder for a more complete manual on Thimbl-CLI, which
 contains the main documentation effort.
 
 
-
-
-* DAEMON
-
-Fed up trying to configure a finger daemon just to serve Thimbl plans?
-Then look in directory daemon, which contains the simplest solution to
-the problem.
-
-
