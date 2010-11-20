@@ -112,3 +112,4 @@ SEE ALSO
 ========
 
 * **man 5 plan** - plan file format
+* **man 8 thingerd** - a simple finger server tailored for thimbl

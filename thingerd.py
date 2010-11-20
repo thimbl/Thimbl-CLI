@@ -44,20 +44,21 @@ class FingerHandler(SocketServer.StreamRequestHandler):
 
     def find_user_info(self, username):
         "Return a string containing the desired user information."
-        username = repr(username)
-        text = "You fingered the user {0}\n".format(username)
+        #username = repr(username)
+        text = "You fingered the user '{0}'\n".format(username)
 
         # work out user's home name
-        if platform.uname()[0] == "Windows":
-            home_dir = os.path.expanduser('~')
-            text += "Windows kludge applied - single user mode only.\n"
-        else:
-            home_dir = os.path.expanduser('~{0}'.format(username))
+        #if platform.uname()[0] == "Windows":
+        #    home_dir = os.path.expanduser('~')
+        #    text += "Windows kludge applied - single user mode only.\n"
+        #else:
+        #    home_dir = os.path.expanduser('/home/{0}'.format(username))
+        home_dir = os.path.expanduser('~{0}'.format(username) )
             
         plan_file = os.path.join(home_dir, ".plan")
-        print plan_file
+        #print plan_file
         if os.path.isfile(plan_file):
-            text += "Plan:\n" + file(plan_file)
+            text += "Plan:\n" + file(plan_file).read()
         return text
 
 # If this script is being run directly, it'll start acting as a finger

@@ -9,3 +9,5 @@ http://code.google.com/p/shellinabox/
 * create reply functionality 
 
 * print messages in tab-delimited format
+
+* Run thingerd.py as a service
