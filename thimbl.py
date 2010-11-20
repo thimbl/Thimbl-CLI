@@ -65,7 +65,7 @@ def fetch(data):
         except AttributeError:
             print 'Failed on address. Skipping'
             continue
-        print "DEBUG:", plan
+        #print "DEBUG:", plan
         data['plans'][address] = plan
     print 'Finished'
     
