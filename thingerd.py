@@ -15,6 +15,10 @@
 # information from the user's home directory or a database of some sort.
 #
 
+# Original code downloaded from
+# http://www.amk.ca/files/simple/fingerd.txt
+# 24-Nov-2010 - copyright status of this file uncertain
+
 import os
 import platform
 import SocketServer
