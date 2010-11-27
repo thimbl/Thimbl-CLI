@@ -1,5 +1,27 @@
 #!/usr/bin/env python
 
+#The MIT License
+#
+#Copyright (c) 2010 A.M. Kuchling
+#
+#Permission is hereby granted, free of charge, to any person obtaining a copy
+#of this software and associated documentation files (the "Software"), to deal
+#in the Software without restriction, including without limitation the rights
+#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#copies of the Software, and to permit persons to whom the Software is
+#furnished to do so, subject to the following conditions:
+#
+#The above copyright notice and this permission notice shall be included in
+#all copies or substantial portions of the Software.
+#
+#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+#THE SOFTWARE.
+
 # fingerd.py
 # By A.M. Kuchling (amk@amk.ca)
 #
@@ -15,9 +37,15 @@
 # information from the user's home directory or a database of some sort.
 #
 
-# Original code downloaded from
-# http://www.amk.ca/files/simple/fingerd.txt
-# 24-Nov-2010 - copyright status of this file uncertain
+# ORIGINAL CODE
+#   The original code can be downloaded from
+#   http://www.amk.ca/files/simple/fingerd.txt
+#   27-Nov-2010 - In an email correspondence, Andrew Kuchling stated that
+#   this is source code is available under an MIT licence shown at:
+#   http://www.opensource.org/licenses/mit-license.php
+#   I have incorporated that code in with this source file so as to spell it
+#   out. Many thanks to Andrew for posting his code and making it available
+#   for free use.
 
 import os
 import platform
