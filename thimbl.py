@@ -10,6 +10,9 @@ import subprocess
 import sys
 import time
 
+def writeln(text):
+    print text
+    
 def create(address, bio, name, website, mobile, email):
     'Create data given user information'
 
@@ -51,28 +54,29 @@ def finger_user(user_name):
     j = json.loads(raw)
     return j
 
-def fetch(data):
+def fetch(data, wout = writeln):
     '''Retrieve all the plans of the people I am following'''
     for following in myplan(data)['following']:
         address = following['address']
         if address == data['me']:
-            print "Stop fingering yourself!"
+            wout("Stop fingering yourself!")
             continue
 
-        print 'Fingering ', address
+        wout('Fingering ' + address)
         try:
             plan = finger_user(address)
+            wout("OK")
         except AttributeError:
-            print 'Failed on address. Skipping'
+            wout('Failed. Skipping')
             continue
         #print "DEBUG:", plan
         data['plans'][address] = plan
-    print 'Finished'
+    wout('Finished')
     
     
 
 
-def prmess(data):
+def prmess(data, wout = writeln):
     'Print messages in reverse chronological order'
     
     # accumulate messages
@@ -84,7 +88,7 @@ def prmess(data):
             msg['address'] = address
             messages.append(msg)
             
-    messages.sort(key = lambda x: x['time'], reverse = True)
+    messages.sort(key = lambda x: x['time'])
     
     # print messages
     for msg in messages:
@@ -93,7 +97,8 @@ def prmess(data):
         y, mo, d, h, mi, s = t[:4], t[4:6], t[6:8], t[8:10], t[10:12], t[12:14]
         ftime = '{0}-{1}-{2} {3}:{4}:{5}'.format(y, mo, d, h, mi, s)
 
-        print '{0}  {1}\n{2}\n\n'.format(ftime, msg['address'], msg['text'])
+        text = '{0}  {1}\n{2}\n\n'.format(ftime, msg['address'], msg['text'])
+        wout(text)
 
 
 def save(data, filename):
@@ -109,6 +114,28 @@ def load(filename):
     s = file(filename, 'r').read()
     return json.loads(s)
 
+def cache_filename():
+    'Return the name of the cache file that stores all of the data'
+    thimbldir = os.path.expanduser('~/.config/thimbl')
+    try: os.makedirs(thimbldir)
+    except OSError: pass # don't worry if directory already exists
+    thimblfile = os.path.join(thimbldir, 'data1.jsn')
+    return thimblfile
+    
+def load_cache():
+    'Load the data file'
+    thimblfile = cache_filename()
+    if os.path.isfile(thimblfile):
+        data = load(thimblfile)
+    else:
+        data = None
+    return data
+
+def save_cache(data):
+    cache_file = cache_filename()
+    save(data, cache_file)
+    
+
 
 def main():
 
@@ -119,16 +146,9 @@ def main():
     #help="don't print status messages to stdout")
     #parser.add_option
 
-    # set up directory and files
-    thimbldir = os.path.expanduser('~/.config/thimbl')
-    try: os.makedirs(thimbldir)
-    except OSError: pass # don't worry if directory already exists
-    thimblfile = os.path.join(thimbldir, 'data1.jsn')
-    if os.path.isfile(thimblfile):
-        data = load(thimblfile)
-    else:
-        data = None
 
+
+    data = load_cache()
     cmd = sys.argv[1]
     if cmd =='fetch':
         fetch(data)
@@ -144,7 +164,7 @@ def main():
         print "Unrecognised command: ", cmd
 
 
-    save(data, thimblfile)
+    save_cache(data)
     publish(data)
 
 
