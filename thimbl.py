@@ -1,4 +1,4 @@
-'''sitt.py - Some Interesting Thimbl Tools '''
+'''thimbl.py - Command-line python tools '''
 
 import cStringIO
 #import datetime
@@ -9,6 +9,32 @@ import re
 import subprocess
 import sys
 import time
+
+#################################################################
+
+class Data:
+    def __init__(self):
+        self.data = load_cache()
+ 
+    def post(self, text):
+        'Create a message. Remember to publish() it'
+        timefmt = time.strftime('%Y%m%d%H%M%S')
+        message = { 'time' : timefmt, 'text' : text }
+        myplan(self.data)['messages'].append(message)
+    
+    
+    def post_file(self, filename):
+        'Create a post from the text in a file'
+        text = file(filename, 'r').read()
+        self.post(text)
+        
+        
+    def __del__(self):
+        print "Data exit"
+        save_cache(self.data)
+        publish(self.data)
+        
+#################################################################
 
 def writeln(text):
     print text
@@ -28,11 +54,7 @@ def myplan(data):
     return data['plans'][data['me']]
 
 
-def post(data, text):
-    'Create a message. Remember to publish() it'
-    timefmt = time.strftime('%Y%m%d%H%M%S')
-    message = { 'time' : timefmt, 'text' : text }
-    myplan(data)['messages'].append(message)
+
 
 
     
@@ -147,25 +169,25 @@ def main():
     #parser.add_option
 
 
-
-    data = load_cache()
+    d = Data()
+    #data = load_cache()
     cmd = sys.argv[1]
     if cmd =='fetch':
-        fetch(data)
+        fetch(d.data)
     elif cmd == 'follow':
-        follow(data, sys.argv[2], sys.argv[3])
+        follow(d.data, sys.argv[2], sys.argv[3])
     elif cmd == 'post':
-        post(data, sys.argv[2])
+        d.post(sys.argv[2])
     elif cmd == 'print':
-        prmess(data)
+        prmess(d.data)
     elif cmd == 'setup':
-        data = apply(create, sys.argv[2:])
+        d.data = apply(create, sys.argv[2:])
     else:
         print "Unrecognised command: ", cmd
 
 
-    save_cache(data)
-    publish(data)
+    #save_cache(data)
+    #publish(data)
 
 
 if __name__ == "__main__":
