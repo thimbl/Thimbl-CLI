@@ -2,6 +2,11 @@ Thimbl is a set of client-side tools for a distributed open source
 microblogging platform. Thimbl-CLI is a set of command-line tools, and
 is more modest in its ambitions than the whole of the Thimbl project.
 
+
+The website should now be visible from
+http://blippy.github.com/Thimbl-CLI/
+which is basically a copy of the website directory.
+
 Thimbl-CLI requires Linux/cygwin. It also includes the simplest
 possible finger daemon to serve your tweets.
 
