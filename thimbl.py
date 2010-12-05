@@ -30,7 +30,7 @@ class Data:
         
         
     def __del__(self):
-        print "Data exit"
+        #print "Data exit"
         save_cache(self.data)
         publish(self.data)
         
@@ -182,6 +182,9 @@ def main():
         prmess(d.data)
     elif cmd == 'setup':
         d.data = apply(create, sys.argv[2:])
+    elif cmd == 'stdin':
+        text = sys.stdin.read()
+        d.post(text)
     else:
         print "Unrecognised command: ", cmd
 
