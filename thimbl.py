@@ -15,19 +15,32 @@ import time
 class Data:
     def __init__(self):
         self.data = load_cache()
+        self.me = myplan(self.data)
  
     def post(self, text):
         'Create a message. Remember to publish() it'
         timefmt = time.strftime('%Y%m%d%H%M%S')
         message = { 'time' : timefmt, 'text' : text }
-        myplan(self.data)['messages'].append(message)
+        self.me['messages'].append(message)
     
     
     def post_file(self, filename):
         'Create a post from the text in a file'
         text = file(filename, 'r').read()
         self.post(text)
-        
+
+    def following(self):
+        'Who am I following?'
+        followees = self.me['following']
+        followees.sort(key = lambda x: x['nick'])
+        for f in followees:
+            print '{0:5} {1}'.format(f['nick'], f['address'])
+
+    def unfollow(self, address):
+        'Remove an address from someone being followed'
+        def func(f): return not (f['address'] == address)
+        new_followees = filter(func, self.me['following'])
+        self.me['following'] = new_followees
         
     def __del__(self):
         #print "Data exit"
@@ -176,6 +189,8 @@ def main():
         fetch(d.data)
     elif cmd == 'follow':
         follow(d.data, sys.argv[2], sys.argv[3])
+    elif cmd == 'following':
+        d.following()
     elif cmd == 'post':
         d.post(sys.argv[2])
     elif cmd == 'print':
@@ -185,6 +200,8 @@ def main():
     elif cmd == 'stdin':
         text = sys.stdin.read()
         d.post(text)
+    elif cmd == 'unfollow':
+        d.unfollow(sys.argv[2])
     else:
         print "Unrecognised command: ", cmd
 
