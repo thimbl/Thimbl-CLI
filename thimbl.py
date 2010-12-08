@@ -195,6 +195,9 @@ def main():
         d.post(sys.argv[2])
     elif cmd == 'print':
         prmess(d.data)
+    elif cmd == 'read':
+        fetch(d.data)
+        prmess(d.data)
     elif cmd == 'setup':
         d.data = apply(create, sys.argv[2:])
     elif cmd == 'stdin':
