@@ -1,7 +1,7 @@
 '''thimbl.py - Command-line python tools '''
 
 import cStringIO
-#import datetime
+import datetime
 import json
 import optparse
 import os
@@ -19,7 +19,7 @@ class Data:
  
     def post(self, text):
         'Create a message. Remember to publish() it'
-        timefmt = time.strftime('%Y%m%d%H%M%S')
+        timefmt = time.strftime('%Y%m%d%H%M%S', time.gmtime())
         message = { 'time' : timefmt, 'text' : text }
         self.me['messages'].append(message)
     
@@ -129,8 +129,9 @@ def prmess(data, wout = writeln):
     for msg in messages:
         # format time
         t = str(msg['time'])
-        y, mo, d, h, mi, s = t[:4], t[4:6], t[6:8], t[8:10], t[10:12], t[12:14]
-        ftime = '{0}-{1}-{2} {3}:{4}:{5}'.format(y, mo, d, h, mi, s)
+        tlist = map(int, [t[:4], t[4:6], t[6:8], t[8:10], t[10:12], t[12:14]])
+        tstruct = apply(datetime.datetime, tlist)
+        ftime = tstruct.strftime('%Y-%m-%d %H:%M:%S')
 
         text = '{0}  {1}\n{2}\n\n'.format(ftime, msg['address'], msg['text'])
         wout(text)
