@@ -11,6 +11,12 @@ import subprocess
 import sys
 import time
 
+
+#################################################################
+
+def writeln(text):
+    print text
+        
 #################################################################
 
 class Data:
@@ -41,7 +47,25 @@ class Data:
         cache_file = self.__cache_filename()
         save(self.data, cache_file)
  
+    def fetch(self, wout = writeln):
+        '''Retrieve all the plans of the people I am following'''
+        for following in self.me['following']:
+            address = following['address']
+            if address == self.data['me']:
+                wout("Stop fingering yourself!")
+                continue
 
+            wout('Fingering ' + address)
+            try:
+                plan = finger_user(address)
+                wout("OK")
+            except AttributeError:
+                wout('Failed. Skipping')
+                continue
+            #print "DEBUG:", plan
+            self.data['plans'][address] = plan
+        wout('Finished')
+    
     def follow(self, nick, address):
         self.me['following'].append( { 'nick' : nick, 'address' : address } )
     
@@ -56,7 +80,33 @@ class Data:
         'Create a post from the text in a file'
         text = file(filename, 'r').read()
         self.post(text)
+        
+    def prmess(self, wout = writeln):
+        'Print messages in reverse chronological order'
+        
+        # accumulate messages
+        messages = []
+        for address in self.data['plans'].keys():
+            plan = self.data['plans'][address]
+            if not plan.has_key('messages'): continue
+            for msg in plan['messages']:
+                msg['address'] = address
+                messages.append(msg)
+                
+        messages.sort(key = lambda x: x['time'])
+        
+        # print messages
+        for msg in messages:
+            # format time
+            t = str(msg['time'])
+            tlist = map(int, [t[:4], t[4:6], t[6:8], t[8:10], t[10:12], t[12:14]])
+            tstruct = apply(datetime.datetime, tlist)
+            ftime = tstruct.strftime('%Y-%m-%d %H:%M:%S')
 
+            text = '{0}  {1}\n{2}\n\n'.format(ftime, msg['address'], msg['text'])
+            wout(text)
+        
+        
     def following(self):
         'Who am I following?'
         followees = self.me['following']
@@ -83,7 +133,9 @@ class Data:
         def func(f): return not (f['address'] == address)
         new_followees = filter(func, self.me['following'])
         self.me['following'] = new_followees
-        
+      
+
+    
     def __del__(self):
         #print "Data exit"
         self.save_cache()
@@ -91,8 +143,7 @@ class Data:
         
 #################################################################
 
-def writeln(text):
-    print text
+
     
     
 
@@ -111,52 +162,12 @@ def finger_user(user_name):
     j = json.loads(raw)
     return j
 
-def fetch(data, wout = writeln):
-    '''Retrieve all the plans of the people I am following'''
-    for following in data.me['following']:
-        address = following['address']
-        if address == data['me']:
-            wout("Stop fingering yourself!")
-            continue
 
-        wout('Fingering ' + address)
-        try:
-            plan = finger_user(address)
-            wout("OK")
-        except AttributeError:
-            wout('Failed. Skipping')
-            continue
-        #print "DEBUG:", plan
-        data['plans'][address] = plan
-    wout('Finished')
     
     
 
 
-def prmess(data, wout = writeln):
-    'Print messages in reverse chronological order'
-    
-    # accumulate messages
-    messages = []
-    for address in data['plans'].keys():
-        plan = data['plans'][address]
-        if not plan.has_key('messages'): continue
-        for msg in plan['messages']:
-            msg['address'] = address
-            messages.append(msg)
-            
-    messages.sort(key = lambda x: x['time'])
-    
-    # print messages
-    for msg in messages:
-        # format time
-        t = str(msg['time'])
-        tlist = map(int, [t[:4], t[4:6], t[6:8], t[8:10], t[10:12], t[12:14]])
-        tstruct = apply(datetime.datetime, tlist)
-        ftime = tstruct.strftime('%Y-%m-%d %H:%M:%S')
 
-        text = '{0}  {1}\n{2}\n\n'.format(ftime, msg['address'], msg['text'])
-        wout(text)
 
 
 def save(data, filename):
@@ -192,7 +203,7 @@ def main():
     d = Data()
     cmd = sys.argv[1]
     if cmd =='fetch':
-        fetch(d.data)
+        d.fetch()
     elif cmd == 'follow':
         d.follow(sys.argv[2], sys.argv[3])
     elif cmd == 'following':
@@ -202,10 +213,10 @@ def main():
     elif cmd == 'post':
         d.post(sys.argv[2])
     elif cmd == 'print':
-        prmess(d.data)
+        d.prmess()
     elif cmd == 'read':
-        fetch(d.data)
-        prmess(d.data)
+        d.fetch()
+        d.prmess()
     elif cmd == 'setup':
         d.setup(sys.argv[2:])
     elif cmd == 'stdin':
