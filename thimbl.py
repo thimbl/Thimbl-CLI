@@ -3,6 +3,7 @@
 import cStringIO
 import datetime
 import json
+import pdb
 import optparse
 import os
 import re
@@ -14,9 +15,36 @@ import time
 
 class Data:
     def __init__(self):
-        self.data = load_cache()
-        self.me = myplan(self.data)
+        self.load_cache()
+        #print self.data
+        #pdb.set_trace()
+        self.whoami = self.data['me']
+        self.me = self.data['plans'][self.whoami]
+    
+    def __cache_filename(self):
+        'Return the name of the cache file that stores all of the data'
+        thimbldir = os.path.expanduser('~/.config/thimbl')
+        try: os.makedirs(thimbldir)
+        except OSError: pass # don't worry if directory already exists
+        thimblfile = os.path.join(thimbldir, 'data1.jsn')
+        return thimblfile
+        
+    def load_cache(self):
+        'Load the data file'
+        thimblfile = self.__cache_filename()
+        if os.path.isfile(thimblfile):
+            self.data = load(thimblfile)
+        else:
+            self.setup()
+
+    def save_cache(self):
+        cache_file = self.__cache_filename()
+        save(self.data, cache_file)
  
+
+    def follow(self, nick, address):
+        self.me['following'].append( { 'nick' : nick, 'address' : address } )
+    
     def post(self, text):
         'Create a message. Remember to publish() it'
         timefmt = time.strftime('%Y%m%d%H%M%S', time.gmtime())
@@ -36,6 +64,20 @@ class Data:
         for f in followees:
             print '{0:5} {1}'.format(f['nick'], f['address'])
 
+
+    
+    def setup(self, values = None):
+        def create(address, bio, name, website, mobile, email):
+            'Create data given user information'
+            properties =  {'website' : website, 'mobile' : mobile, 'email' : email }
+            plan = { 'address' : address, 'name' : name, 'messages' : [],
+                     'replies' : {},'following' : [], 'properties' : properties}
+            data = { 'me' : address, 'plans' : { address : plan }}
+            return data
+        if not values:
+            values = ["me@example.com", "I am not a number", "6", "www.example.com", "TBD", "me@example.com"]
+        self.data = apply(create, values)
+
     def unfollow(self, address):
         'Remove an address from someone being followed'
         def func(f): return not (f['address'] == address)
@@ -44,36 +86,16 @@ class Data:
         
     def __del__(self):
         #print "Data exit"
-        save_cache(self.data)
-        publish(self.data)
+        self.save_cache()
+        save(self.me, os.path.expanduser('~/.plan'))
         
 #################################################################
 
 def writeln(text):
     print text
     
-def create(address, bio, name, website, mobile, email):
-    'Create data given user information'
-
-    properties =  {'website' : website, 'mobile' : mobile, 'email' : email }
-    plan = { 'address' : address, 'name' : name, 'messages' : [],
-             'replies' : {},'following' : [], 'properties' : properties}
-    data = { 'me' : address, 'plans' : { address : plan }}
-    return data
-
-
-
-def myplan(data):
-    return data['plans'][data['me']]
-
-
-
-
-
     
 
-def follow(data, nick, address):
-    myplan(data)['following'].append( { 'nick' : nick, 'address' : address } )
 
 
 def finger_user(user_name):
@@ -91,7 +113,7 @@ def finger_user(user_name):
 
 def fetch(data, wout = writeln):
     '''Retrieve all the plans of the people I am following'''
-    for following in myplan(data)['following']:
+    for following in data.me['following']:
         address = following['address']
         if address == data['me']:
             wout("Stop fingering yourself!")
@@ -142,34 +164,14 @@ def save(data, filename):
     j = json.dumps(data)
     file(filename, 'w').write(j)
 
-def publish(data):
-    save(myplan(data), os.path.expanduser('~/.plan'))
+
          
 def load(filename):
     'Load data from a json file'
     s = file(filename, 'r').read()
     return json.loads(s)
 
-def cache_filename():
-    'Return the name of the cache file that stores all of the data'
-    thimbldir = os.path.expanduser('~/.config/thimbl')
-    try: os.makedirs(thimbldir)
-    except OSError: pass # don't worry if directory already exists
-    thimblfile = os.path.join(thimbldir, 'data1.jsn')
-    return thimblfile
-    
-def load_cache():
-    'Load the data file'
-    thimblfile = cache_filename()
-    if os.path.isfile(thimblfile):
-        data = load(thimblfile)
-    else:
-        data = None
-    return data
 
-def save_cache(data):
-    cache_file = cache_filename()
-    save(data, cache_file)
     
 
 
@@ -182,16 +184,21 @@ def main():
     #help="don't print status messages to stdout")
     #parser.add_option
 
-
+    num_args = len(sys.argv) - 1
+    if num_args < 1 :
+        print "No command specified. Try help"
+        return
+        
     d = Data()
-    #data = load_cache()
     cmd = sys.argv[1]
     if cmd =='fetch':
         fetch(d.data)
     elif cmd == 'follow':
-        follow(d.data, sys.argv[2], sys.argv[3])
+        d.follow(sys.argv[2], sys.argv[3])
     elif cmd == 'following':
         d.following()
+    elif cmd == 'help':
+        print "Sorry, not much help at the moment"
     elif cmd == 'post':
         d.post(sys.argv[2])
     elif cmd == 'print':
@@ -200,7 +207,7 @@ def main():
         fetch(d.data)
         prmess(d.data)
     elif cmd == 'setup':
-        d.data = apply(create, sys.argv[2:])
+        d.setup(sys.argv[2:])
     elif cmd == 'stdin':
         text = sys.stdin.read()
         d.post(text)
@@ -208,10 +215,6 @@ def main():
         d.unfollow(sys.argv[2])
     else:
         print "Unrecognised command: ", cmd
-
-
-    #save_cache(data)
-    #publish(data)
 
 
 if __name__ == "__main__":
